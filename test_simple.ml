@@ -1,6 +1,6 @@
 (*
-	      CS 51 Really Simple Unit Testing Framework
- *)			     
+              CS 51 Really Simple Unit Testing Framework
+ *)                          
 
 (* unit_test test msg -- Returns unit, with side effect of printing a
    report identified by msg on whether the unit test passed (returned

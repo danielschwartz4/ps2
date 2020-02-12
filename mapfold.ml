@@ -9,7 +9,7 @@ in the textbook. It provides context and crucial information for
 completing the problems.
 
 Solve each problem in this part using `List.map`, `List.fold_left`,
-`List.fold_right`, and `List.filter`, as well as functions from ealrier
+`List.fold_right`, and `List.filter`, as well as functions from earlier
 problems. You are permitted to use other functions from the `List`
 module. However, you should think about whether they’re necessary and be
 mindful of their usage.

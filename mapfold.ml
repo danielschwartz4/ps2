@@ -1,4 +1,4 @@
-(* 
+(*
                          CS 51 Problem Set 2
                  Higher-Order Functional Programming
  *)
@@ -28,16 +28,18 @@ Problem 1: Define a function `negate_all` that flips the sign of each
 element in an integer list.
 ......................................................................*)
 
-let negate_all (nums : int list) : int list = 
-  failwith "negate_all not implemented" ;;
+let negate_all (nums : int list) : int list =
+  List.map (fun x -> x * -1) nums
+  ;;
 
 (*......................................................................
-Problem 2: Define a function `sum` that returns the sum of the 
+Problem 2: Define a function `sum` that returns the sum of the
 elements in an integer list.
 ......................................................................*)
 
 let sum (nums : int list) : int =
-  failwith "sum not implemented" ;;
+  List.fold_left (fun acc x -> acc + x) 0 nums
+  ;;
 
 (*......................................................................
 Problem 3: Define a function `sum_rows` that takes a list of "rows",
@@ -46,11 +48,18 @@ in this list is equal to the sum of the corresponding rows in the
 input. For example:
 
     # sum_rows [[1; 2]; [3; 4]] ;;
-    - : int list = [3; 7] 
+    - : int list = [3; 7]
 ......................................................................*)
 
 let sum_rows (rows : int list list) : int list =
-  failwith "sum_rows not implemented" ;;
+let [x; y] = rows in
+  List.map (fun rows -> List.fold_left (fun acc a -> acc + a) 0 rows) rows;;
+
+  (* let [x; y] = rows in
+  List.fold_left (fun acc a -> acc + a) 0 x
+  List.fold_left (fun acc a -> acc + a) 0 y;;
+    List.concat [one; two]
+  ;; *)
 
 (*......................................................................
 Problem 4: Define a function `filter_odd` that takes an integer list and
@@ -61,7 +70,7 @@ retains only the odd numbers from the given list. For example:
 ......................................................................*)
 
 let filter_odd (nums : int list) : int list =
-  failwith "filter_odd not implemented" ;;
+  List.filter (fun filt -> filt mod 2 != 0) nums ;;
 
 (*......................................................................
 Problem 5: Define a function `num_occurs` that returns the number of
@@ -72,7 +81,12 @@ times a given number appears in a list. For example:
 ......................................................................*)
 
 let num_occurs (n : int) (nums : int list) : int =
-    failwith "num_occurs not implemented" ;;
+  let new_list = List.filter (fun x -> x = n) nums in
+  List.fold_left (fun acc _ -> acc + 1) 0 new_list
+  ;;
+
+(* let num (nums : int list) : int =
+  List.iter (fun x -> nums);; *)
 
 (*......................................................................
 Problem 6: Define a function `super_sum` that sums all of the numbers in
@@ -83,7 +97,9 @@ a list of integer lists. For example:
 ......................................................................*)
 
 let super_sum (nlists : int list list) : int =
-  failwith "super_sum not implemented" ;;
+  let lst = List.concat (nlists) in
+  List.fold_left (fun acc x -> acc + x) 0 lst
+  ;;
 
 (*......................................................................
 Problem 7: Define a function `filter_range` that takes a list `lst` and
@@ -103,7 +119,10 @@ within the range, and the result is the empty list.
 ......................................................................*)
 
 let filter_range (nums : int list) (range : int * int) : int list =
-  failwith "filter_range not implemented" ;;
+  let (x, y) = range in
+  if x > y then []
+  else List.filter (fun between -> between <= y && between >= x) nums
+  ;;
 
 (*......................................................................
 Problem 8: Define a function `floats_of_ints` that converts an `int
@@ -114,7 +133,8 @@ list` into a `float list`. For example:
 ......................................................................*)
 
 let floats_of_ints (nums : int list) : float list =
-  failwith "floats_of_ints not implemented" ;;
+  List.map (fun lst -> float_of_int lst) nums
+  ;;
 
 (*......................................................................
 Problem 9: Define a function `log10s` that applies the `log10` function
@@ -127,7 +147,8 @@ undefined results should be `None`. For example:
 ......................................................................*)
 
 let log10s (lst : float list) : float option list =
-  failwith "log10s not implemented" ;;
+  List.map (fun n -> if n <= 0.0 then None else Some (log10 n)) lst
+  ;;
 
 (*......................................................................
 Problem 10: Define a function `deoptionalize` that extracts values from
@@ -138,7 +159,9 @@ a list of options, ignoring `None` values. For example:
 ......................................................................*)
 
 let deoptionalize (lst : 'a option list) : 'a list =
-  failwith "deoptionalize not implemented" ;;
+  List.map (fun (Some num) -> num)
+  (List.filter (fun non -> not (non = None)) lst)
+  ;;
 
 (*......................................................................
 Problem 11: Define a function `some_sum` that sums all of the numbers in
@@ -149,7 +172,8 @@ a list of `int option`s but ignores `None` values. For example:
 ......................................................................*)
 
 let some_sum (nums : int option list) : int =
-  failwith "some_sum not implemented" ;;
+  sum (deoptionalize nums)
+  ;;
 
 (*......................................................................
 Problem 12: Define a function `mult_odds` that returns the product of
@@ -164,7 +188,9 @@ wondering what to do in a certain edge case.
 ......................................................................*)
 
 let mult_odds (nums : int list) : int =
-  failwith "mult_odds not implemented" ;;
+  let filtered = List.filter (fun x -> x mod 2 != 0) nums in
+    List.fold_left (fun num acc -> num * acc) 1 filtered
+  ;;
 
 (*......................................................................
 Problem 13: Define a function `concat` that concatenates a list of
@@ -175,11 +201,11 @@ lists. For example:
 ......................................................................*)
 
 let concat (lists : 'a list list) : 'a list =
-  failwith "concat not implemented" ;;
+  List.concat (lists);;
 
-(* For the next problem, we define a type that represents a student 
+(* For the next problem, we define a type that represents a student
 as a tuple of the student's name and year. *)
-   
+
 type name = string ;;
 type year = int ;;
 type student = name * year ;;
@@ -192,12 +218,13 @@ all the students in a given year. For example:
     val students : (string * int) list =
       [("Joe", 2010); ("Bob", 2010); ("Tom", 2013)]
 
-    # filter_by_year students 2010 = 
+    # filter_by_year students 2010 =
     - : name list = ["Joe"; "Bob"]
 ......................................................................*)
 
 let filter_by_year (slist : student list) (yr : year) : name list =
-  failwith "filter_by_year not implemented" ;;
+  List.map (fun (x, y) -> x)
+  (List.filter (fun (a, b) -> b = yr) slist);;
 
 (*======================================================================
 Reflection on the problem set
@@ -208,11 +235,11 @@ creating and improving future assignments.
 
 ........................................................................
 Please give us an honest (if approximate) estimate of how long (in
-minutes) this problem set took you to complete. 
+minutes) this problem set took you to complete.
 ......................................................................*)
 
 let minutes_spent_on_pset () : int =
-  failwith "time estimate not provided" ;;
+  120 ;;
 
 (*......................................................................
 It's worth reflecting on the work you did on this problem set, where
@@ -223,4 +250,4 @@ string below.
 ......................................................................*)
 
 let reflection () : string =
-  "...your reflections here..." ;;
+  "It was tricky trying to figure out which List function to use, but once I figured that out, the syntax was easy" ;;
